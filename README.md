@@ -13,3 +13,13 @@ You can install Zing with one command
 ```
 curl -fsSL https://raw.githubusercontent.com/SharkStudiosSK/zing/refs/heads/main/install.sh | sh
 ```
+
+### From Source
+```
+git clone https://github.com/SharkStudiosSK/zing.git
+cd zing
+```
+Then just build
+```
+go build main.go
+```
