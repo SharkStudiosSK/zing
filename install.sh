@@ -9,7 +9,7 @@ REPO_URL="https://github.com/SharkStudiosSK/zing.git" # CHANGE THIS TO YOUR NEW 
 GO_VERSION_REQUIRED="1.18"
 
 # Check if Go is installed and the version is sufficient
-if ! command -v go &> /dev/null; then
+if ! /opt/go/bin/go version &> /dev/null; then
   echo "Error: Go is not installed. Please install Go ${GO_VERSION_REQUIRED} or later."
   exit 1
 fi
