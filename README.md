@@ -11,7 +11,7 @@ check out https://github.com/SharkStudiosSK/zingpackage for the code that runs t
 ## Installation
 You can install Zing with one command
 ```
-curl -fsSL https://raw.githubusercontent.com/SharkStudiosSK/zing/refs/heads/main/install.sh | sh
+sudo curl -fsSL https://raw.githubusercontent.com/SharkStudiosSK/zing/refs/heads/main/install.sh | sh
 ```
 
 ### From Source
@@ -22,5 +22,20 @@ go mod tidy
 ```
 Then just build
 ```
-go build main.go
+go build -o zing main.go
+```
+And move to ~/bin(PATH)
+```
+mkdir -p ~/bin
+mv zing ~/bin/
+```
+
+If ~/bin is not in PATH do
+```
+export PATH="$HOME/bin:$PATH"
+```
+
+And source ~/.bashrc
+```
+source ~/.bashrc
 ```
