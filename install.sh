@@ -8,22 +8,33 @@ REPO_URL="https://github.com/SharkStudiosSK/zing.git" # CHANGE THIS TO YOUR NEW 
 # Go version requirement
 GO_VERSION_REQUIRED="1.18"
 
-# Check if Go is installed and the version is sufficient
-#if ! /opt/go/bin/go version &> /dev/null; then
-#  echo "Error: Go is not installed. Please install Go ${GO_VERSION_REQUIRED} or later."
-#  exit 1
-#fi
+# Check if Go is installed
+if ! command -v go >/dev/null 2>&1; then
+    echo "Error: Go is not installed. Please install Go ${GO_VERSION_REQUIRED} or later."
+    exit 1
+fi
 
+# Get Go version and compare
 go_version=$(go version | awk '{print $3}' | sed 's/^go//')
-if [[ "$(printf '%s\n%s' "$GO_VERSION_REQUIRED" "$go_version" | sort -V | head -n1)" == "$GO_VERSION_REQUIRED" ]]; then
+if ! echo "$go_version" | grep -qE '^[0-9]+\.[0-9]+'; then
+    echo "Error: Could not parse Go version from 'go version' output."
+    exit 1
+fi
+
+# Function to compare version numbers
+version_ge() {
+    [ "$(printf '%s\n%s' "$1" "$2" | sort -V | head -n1)" = "$2" ]
+}
+
+if ! version_ge "$go_version" "$GO_VERSION_REQUIRED"; then
     echo "Error: Your Go version ($go_version) is too old. Please install Go ${GO_VERSION_REQUIRED} or later."
     exit 1
 fi
 
 # Check if Git is installed
-if ! command -v git &> /dev/null; then
-  echo "Error: Git is not installed. Please install Git."
-  exit 1
+if ! command -v git >/dev/null 2>&1; then
+    echo "Error: Git is not installed. Please install Git."
+    exit 1
 fi
 
 # Clone the repository
@@ -32,27 +43,41 @@ git clone "$REPO_URL" zing-temp
 # Change directory into the cloned repository
 cd zing-temp
 
-# Build the main.go file
-go build main.go
+# Update zingpackage
+go mod tidy
+
+# Build the main.go file with output named 'zing'
+go build -o zing main.go
 
 # Check if the build was successful
-if ! [[ -f ./zing ]]; then
-    echo "Error. Build failed. The 'zing' executable was not found."
+if [[ ! -f ./zing ]]; then
+    echo "Error: Build failed. The 'zing' executable was not found."
     exit 1
 fi
 
-# Move the executable to /usr/local/bin (requires sudo)
-sudo mv ./zing /usr/local/bin/
+# Create bin directory in user's home if it doesn't exist
+mkdir -p ~/bin
+
+# Move the executable to ~/bin
+mv ./zing ~/bin/
 
 # Check if moving was successful
-if [[ ! -f /usr/local/bin/zing ]]; then
-    echo "Error: Failed to move 'zing' to /usr/local/bin. Check permissions."
+if [[ ! -f ~/bin/zing ]]; then
+    echo "Error: Failed to move 'zing' to ~/bin. Check permissions."
     exit 1
+fi
+
+# Check if ~/bin is in PATH, add it if not
+if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
+    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+    echo "~/bin has been added to your PATH. Please run 'source ~/.bashrc' or restart your terminal to apply changes."
+else
+    echo "~/bin is already in your PATH."
 fi
 
 # Cleanup (remove the cloned repository)
 cd ..
 rm -rf zing-temp
 
-echo "Zing has been successfully installed. You can now use the 'zing' command."
+echo "Zing has been successfully installed. You can now use the 'zing' command after applying the PATH changes."
 exit 0
