@@ -70,14 +70,24 @@ fi
 # Check if ~/bin is in PATH, add it if not
 if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
     echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
-    echo "~/bin has been added to your PATH. Please run 'source ~/.bashrc' or restart your terminal to apply changes."
-else
-    echo "~/bin is already in your PATH."
+    echo "~/bin has been added to your PATH."
 fi
+
+# Create ~/.zing/installed directory for zinglets if it doesn't exist
+mkdir -p ~/.zing/installed
+
+# Check if ~/.zing/installed is in PATH, add it if not
+if [[ ":$PATH:" != *":$HOME/.zing/installed:"* ]]; then
+    echo 'export PATH="$HOME/.zing/installed:$PATH"' >> ~/.bashrc
+    echo "~/.zing/installed has been added to your PATH for zinglets."
+fi
+
+# Inform user to apply changes
+echo "Please run 'source ~/.bashrc' or restart your terminal to apply PATH changes."
 
 # Cleanup (remove the cloned repository)
 cd ..
 rm -rf zing-temp
 
-echo "Zing has been successfully installed. You can now use the 'zing' command after applying the PATH changes."
+echo "Zing has been successfully installed. You can now use the 'zing' command and zinglets after applying the PATH changes."
 exit 0
