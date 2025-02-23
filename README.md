@@ -18,6 +18,7 @@ curl -fsSL https://raw.githubusercontent.com/SharkStudiosSK/zing/refs/heads/main
 ```
 git clone https://github.com/SharkStudiosSK/zing.git
 cd zing
+go mod tidy
 ```
 Then just build
 ```
