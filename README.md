@@ -30,9 +30,11 @@ mkdir -p ~/bin
 mv zing ~/bin/
 ```
 
-If ~/bin is not in PATH do
+If ~/bin and ~/.zing/installed are not already in your PATH, add them by appending these lines to your ~/.bashrc (or equivalent shell configuration file):
 ```
+mkdir -p ~/.zing/installed
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.zing/installed:$PATH"
 ```
 
 And source ~/.bashrc
